@@ -1,0 +1,53 @@
+version: "3.7"
+services:
+
+  service1:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      meshnet:
+        aliases:
+          - service1
+    environment:
+      - SERVICE_NAME=checkAvailability
+      - PORT=8000
+    expose:
+      - "8000"
+    ports:
+      - "8002:8000"
+
+  service2:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    networks:
+      meshnet:
+        aliases:
+          - service2
+    environment:
+      - SERVICE_NAME=checkStock
+      - PORT=8000
+    expose:
+      - "8000"
+    ports:
+      - "8003:8000"
+
+
+  jaeger:
+    image: jaegertracing/all-in-one
+    environment:
+      - COLLECTOR_ZIPKIN_HTTP_PORT=9411
+    networks:
+      meshnet:
+        aliases:
+          - jaeger
+    expose:
+      - "9411"
+      - "16686"
+    ports:
+      - "9411:9411"
+      - "16686:16686"
+
+networks:
+  meshnet: {}
